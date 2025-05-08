@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Liste des Événements')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Événements à venir</h1>
+        <div th:if="${session.user instanceof T(com.emsi.events.model.entity.MembreClub)}">
+            <a th:href="@{/evenements/creer}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Créer un événement
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Rechercher un événement..." id="searchInput">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-end gap-2">
+                <select class="form-select w-auto" id="filterType">
+                    <option value="all">Tous les événements</option>
+                    <option value="free">Événements gratuits</option>
+                    <option value="paid">Événements payants</option>
+                </select>
+                <select class="form-select w-auto" id="sortBy">
+                    <option value="date">Trier par date</option>
+                    <option value="name">Trier par nom</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${not #lists.isEmpty(evenements)}">
+        <div class="col" th:each="evenement : ${evenements}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <span th:text="${evenement.club.nom}">Nom du club</span>
+                    <span class="badge" th:classappend="${evenement.estPayant ? 'bg-warning' : 'bg-success'}" th:text="${evenement.estPayant ? 'Payant' : 'Gratuit'}">Statut</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${evenement.titre}">Titre de l'événement</h5>
+                    <p class="card-text" th:text="${#strings.abbreviate(evenement.description, 100)}">Description</p>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span th:text="${evenement.lieu}">Lieu</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar me-2"></i>
+                        <span th:text="${#temporals.format(evenement.date, 'dd/MM/yyyy HH:mm')}">Date</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a th:href="@{/evenements/{id}(id=${evenement.id})}" class="btn btn-primary w-100">
+                        Voir les détails
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info" th:if="${#lists.isEmpty(evenements)}">
+        <i class="bi bi-info-circle me-2"></i> Aucun événement à venir pour le moment.
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

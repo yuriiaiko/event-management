@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title=${evenement.titre})}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h1 class="card-title" th:text="${evenement.titre}">Titre de l'événement</h1>
+            <span class="badge" th:classappend="${evenement.estPayant ? 'bg-warning' : 'bg-success'}" th:text="${evenement.estPayant ? 'Payant' : 'Gratuit'}">Statut</span>
+          </div>
+
+          <div class="mb-4">
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-calendar-event me-2"></i>
+              <span th:text="${#temporals.format(evenement.date, 'EEEE dd MMMM yyyy à HH:mm')}">Date</span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-geo-alt me-2"></i>
+              <span th:text="${evenement.lieu}">Lieu</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-people me-2"></i>
+              <span>Organisé par <a th:href="@{/club/{id}(id=${evenement.club.id})}" th:text="${evenement.club.nom}">Club</a></span>
+            </div>
+          </div>
+
+          <h5>Description</h5>
+          <p class="card-text" th:text="${evenement.description}">Description détaillée de l'événement.</p>
+
+          <div class="mt-4" th:if="${session.user instanceof T(com.emsi.events.model.entity.Etudiant)}">
+            <div th:if="${estInscrit}">
+              <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i> Vous êtes inscrit à cet événement.
+              </div>
+              <form th:action="@{/evenements/{id}/desinscription(id=${evenement.id})}" method="post" th:if="${!evenement.estPayant}">
+                <button type="submit" class="btn btn-outline-danger">
+                  <i class="bi bi-x-circle"></i> Se désinscrire
+                </button>
+              </form>
+            </div>
+            <div th:unless="${estInscrit}">
+              <form th:action="@{/evenements/{id}/inscription(id=${evenement.id})}" method="post">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-check-circle"></i> S'inscrire
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="mt-4" th:if="${session.user instanceof T(com.emsi.events.model.entity.MembreClub) && session.user.club.id == evenement.club.id}">
+            <div class="d-flex gap-2">
+              <a th:href="@{/evenements/{id}/modifier(id=${evenement.id})}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Modifier
+              </a>
+              <form th:action="@{/evenements/{id}/supprimer(id=${evenement.id})}" method="post">
+                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
+                  <i class="bi bi-trash"></i> Supprimer
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Informations</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h6>Statut</h6>
+            <p th:text="${evenement.estPayant ? 'Événement payant' : 'Événement gratuit'}">Statut</p>
+          </div>
+          <div class="mb-3" th:if="${evenement.estPayant}">
+            <h6>Tarif</h6>
+            <p>Contactez le club organisateur pour plus d'informations.</p>
+          </div>
+          <div>
+            <h6>Organisateur</h6>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-people-fill me-2 fs-5"></i>
+              <a th:href="@{/club/{id}(id=${evenement.club.id})}" th:text="${evenement.club.nom}">Club</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Partager</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex gap-3">
+            <a href="#" class="text-primary fs-4"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="text-info fs-4"><i class="bi bi-twitter"></i></a>
+            <a href="#" class="text-success fs-4"><i class="bi bi-whatsapp"></i></a>
+            <a href="#" class="text-secondary fs-4"><i class="bi bi-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

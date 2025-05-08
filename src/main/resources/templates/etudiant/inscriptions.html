@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Mes Inscriptions')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+  <h1 class="mb-4">Mes Inscriptions</h1>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="list-group mb-4">
+        <a th:href="@{/etudiant/dashboard}" class="list-group-item list-group-item-action">
+          <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+        </a>
+        <a href="#" class="list-group-item list-group-item-action active">
+          <i class="bi bi-calendar-check me-2"></i> Mes inscriptions
+        </a>
+        <a th:href="@{/etudiant/notifications}" class="list-group-item list-group-item-action">
+          <i class="bi bi-bell me-2"></i> Notifications
+        </a>
+        <a th:href="@{/evenements}" class="list-group-item list-group-item-action">
+          <i class="bi bi-calendar-event me-2"></i> Événements à venir
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Liste de mes inscriptions</h5>
+            <a th:href="@{/evenements}" class="btn btn-sm btn-primary">
+              <i class="bi bi-plus-circle me-1"></i> S'inscrire à un événement
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive" th:if="${not #lists.isEmpty(inscriptions)}">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Événement</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Organisateur</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="inscription : ${inscriptions}">
+                <td th:text="${inscription.evenement.titre}">Titre</td>
+                <td th:text="${#temporals.format(inscription.evenement.date, 'dd/MM/yyyy HH:mm')}">Date</td>
+                <td th:text="${inscription.evenement.lieu}">Lieu</td>
+                <td th:text="${inscription.evenement.club.nom}">Club</td>
+                <td>
+                  <span class="badge"
+                    th:classappend="${inscription.statut.name() == 'EN_ATTENTE'} ? ' bg-warning' :
+                      ${inscription.statut.name() == 'CONFIRMEE'} ? ' bg-success' :
+                      ${inscription.statut.name() == 'ANNULEE'} ? ' bg-danger' : ' bg-secondary'"
+                    th:text="${inscription.statut}">
+                    Statut
+                  </span>
+                </td>
+
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <a th:href="@{/evenements/{id}(id=${inscription.evenement.id})}" class="btn btn-outline-primary">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <form th:if="${!inscription.evenement.estPayant && inscription.statut.name() != 'ANNULEE'}"
+                          th:action="@{/evenements/{id}/desinscription(id=${inscription.evenement.id})}" method="post">
+                      <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir vous désinscrire de cet événement ?')">
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-info" th:if="${#lists.isEmpty(inscriptions)}">
+            <i class="bi bi-info-circle me-2"></i> Vous n'êtes inscrit à aucun événement pour le moment.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

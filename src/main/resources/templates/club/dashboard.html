@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Tableau de bord - Club')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 th:text="${'Tableau de bord - ' + club.nom}">Tableau de bord du club</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="list-group mb-4">
+        <a href="#" class="list-group-item list-group-item-action active">
+          <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+        </a>
+        <a th:href="@{/club/evenements}" class="list-group-item list-group-item-action">
+          <i class="bi bi-calendar-event me-2"></i> Événements
+        </a>
+        <a th:href="@{/club/membres}" class="list-group-item list-group-item-action">
+          <i class="bi bi-people me-2"></i> Membres
+        </a>
+        <a th:href="@{/evenements/creer}" class="list-group-item list-group-item-action">
+          <i class="bi bi-plus-circle me-2"></i> Créer un événement
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">Événements organisés</h5>
+              <p class="card-text fs-1 fw-bold text-primary" th:text="${evenements.size()}">0</p>
+              <a th:href="@{/club/evenements}" class="btn btn-sm btn-outline-primary">Gérer les événements</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">Membres du club</h5>
+              <p class="card-text fs-1 fw-bold text-primary" th:text="${membres.size()}">0</p>
+              <a th:href="@{/club/membres}" class="btn btn-sm btn-outline-primary">Gérer les membres</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Événements à venir</h5>
+          <a th:href="@{/evenements/creer}" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus-circle"></i> Créer
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive" th:if="${not #lists.isEmpty(evenements)}">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Titre</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Type</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="evenement : ${evenements}">
+                <td th:text="${evenement.titre}">Titre</td>
+                <td th:text="${#temporals.format(evenement.date, 'dd/MM/yyyy HH:mm')}">Date</td>
+                <td th:text="${evenement.lieu}">Lieu</td>
+                <td>
+                  <span class="badge" th:classappend="${evenement.estPayant ? 'bg-warning' : 'bg-success'}" th:text="${evenement.estPayant ? 'Payant' : 'Gratuit'}">Type</span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <a th:href="@{/evenements/{id}(id=${evenement.id})}" class="btn btn-outline-primary">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a th:href="@{/evenements/{id}/modifier(id=${evenement.id})}" class="btn btn-outline-secondary">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteModal-' + evenement.id}">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+
+                  <!-- Modal de confirmation de suppression -->
+                  <div class="modal fade" th:id="${'deleteModal-' + evenement.id}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          Êtes-vous sûr de vouloir supprimer l'événement <strong th:text="${evenement.titre}">Titre</strong> ?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                          <form th:action="@{/evenements/{id}/supprimer(id=${evenement.id})}" method="post">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-info" th:if="${#lists.isEmpty(evenements)}">
+            <i class="bi bi-info-circle me-2"></i> Aucun événement n'a été créé pour le moment.
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Membres du club</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive" th:if="${not #lists.isEmpty(membres)}">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="membre : ${membres}">
+                <td th:text="${membre.nom}">Nom</td>
+                <td th:text="${membre.prenom}">Prénom</td>
+                <td th:text="${membre.email}">Email</td>
+                <td th:text="${membre.role}">Rôle</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-info" th:if="${#lists.isEmpty(membres)}">
+            <i class="bi bi-info-circle me-2"></i> Aucun membre n'a été ajouté pour le moment.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

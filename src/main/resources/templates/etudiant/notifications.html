@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Mes Notifications')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+    <h1 class="mb-4">Mes Notifications</h1>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a th:href="@{/etudiant/dashboard}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+                </a>
+                <a th:href="@{/etudiant/inscriptions}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-check me-2"></i> Mes inscriptions
+                </a>
+                <a href="#" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-bell me-2"></i> Notifications
+                </a>
+                <a th:href="@{/evenements}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-event me-2"></i> Événements à venir
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Toutes mes notifications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group" th:if="${not #lists.isEmpty(notifications)}">
+                        <div class="list-group-item list-group-item-action" th:each="notification : ${notifications}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    <span class="badge"
+                                        th:classappend="${notification.type.name() == 'INSCRIPTION'} ? ' bg-success' :
+                                            ${notification.type.name() == 'ANNULATION'} ? ' bg-danger' :
+                                            ${notification.type.name() == 'MODIFICATION'} ? ' bg-warning' :
+                                            ${notification.type.name() == 'RAPPEL'} ? ' bg-info' : ' bg-secondary'"
+                                        th:text="${notification.type}">
+                                            Type
+                                    </span>
+                                </h6>
+                                <small th:text="${#temporals.format(notification.dateEnvoi, 'dd/MM/yyyy HH:mm')}">Date</small>
+                            </div>
+                            <p class="mb-1" th:text="${notification.contenu}">Contenu</p>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(notifications)}">
+                        <i class="bi bi-info-circle me-2"></i> Vous n'avez aucune notification pour le moment.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

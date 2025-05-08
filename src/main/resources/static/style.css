@@ -1,0 +1,141 @@
+/* Styles personnalisés pour l'application */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Utilise toute la hauteur de la fenêtre */
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    flex: 1 0 auto; /* Permet au contenu principal de s'étendre */
+}
+
+.card {
+    border-radius: 0.5rem;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+.btn {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #3949ab;
+    border-color: #3949ab;
+}
+
+.btn-primary:hover {
+    background-color: #303f9f;
+    border-color: #303f9f;
+}
+
+.bg-primary {
+    background-color: #3949ab !important;
+}
+
+.text-primary {
+    color: #3949ab !important;
+}
+
+footer {
+    flex-shrink: 0; /* Empêche le footer de rétrécir */
+    width: 100%;
+    margin-top: auto !important; /* Pousse le footer vers le bas et remplace mt-5 */
+}
+
+/* Styles pour les événements */
+.event-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card .card-body {
+    flex: 1;
+}
+
+/* Styles pour les formulaires */
+.form-control:focus {
+    border-color: #3949ab;
+    box-shadow: 0 0 0 0.25rem rgba(57, 73, 171, 0.25);
+}
+
+/* Styles pour les badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+/* Styles pour les alertes */
+.alert {
+    border-radius: 0.5rem;
+}
+
+/* Styles pour les tableaux */
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(57, 73, 171, 0.05);
+}
+
+/* Styles pour les modales */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.modal-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+/* Styles pour les listes */
+.list-group-item {
+    border-radius: 0.25rem !important;
+    margin-bottom: 0.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.list-group-item.active {
+    background-color: #3949ab;
+    border-color: #3949ab;
+}
+
+/* Styles spécifiques pour la page de connexion */
+.login-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.login-content {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+}

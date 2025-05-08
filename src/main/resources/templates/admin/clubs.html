@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout/main :: head(title='Gestion des Clubs')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+    <h1 class="mb-4">Gestion des Clubs</h1>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a th:href="@{/admin/dashboard}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+                </a>
+                <a th:href="@{/admin/personnes}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people me-2"></i> Utilisateurs
+                </a>
+                <a href="#" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-people-fill me-2"></i> Clubs
+                </a>
+                <a th:href="@{/admin/evenements}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-event me-2"></i> Événements
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Liste des clubs</h5>
+                    <a th:href="@{/admin/clubs/creer}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-plus-circle"></i> Créer un club
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Rechercher un club..." id="searchInput">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" th:if="${not #lists.isEmpty(clubs)}">
+                        <table class="table table-hover" id="clubsTable">
+                            <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Membres</th>
+                                <th>Événements</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="club : ${clubs}">
+                                <td th:text="${club.nom}">Nom</td>
+                                <td th:text="${club.membres != null ? club.membres.size() : 0}">0</td>
+                                <td th:text="${club.evenements != null ? club.evenements.size() : 0}">0</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{/club/{id}(id=${club.id})}" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/clubs/{id}/modifier(id=${club.id})}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="${'#deleteModal-' + club.id}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Modal de confirmation de suppression -->
+                                    <div class="modal fade" th:id="${'deleteModal-' + club.id}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Êtes-vous sûr de vouloir supprimer le club <strong th:text="${club.nom}">Nom</strong> ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                    <form th:action="@{/admin/clubs/{id}/supprimer(id=${club.id})}" method="post">
+                                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(clubs)}">
+
+                    <i class="bi bi-info-circle me-2"></i> Aucun club n'a été créé pour le moment.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('clubsTable');
+
+        if (searchInput && table) {
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const nom = row.cells[0].textContent.toLowerCase();
+
+                    if (nom.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

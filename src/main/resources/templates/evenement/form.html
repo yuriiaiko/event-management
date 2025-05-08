@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title=${evenement.id != null ? 'Modifier l\'événement' : 'Créer un événement'})}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0" th:text="${evenement.id != null ? 'Modifier l\'événement' : 'Créer un événement'}">Formulaire d'événement</h3>
+    </div>
+    <div class="card-body">
+      <form th:action="${evenement.id != null ? '/evenements/' + evenement.id + '/modifier' : '/evenements/creer'}" method="post" th:object="${evenement}">
+        <input type="hidden" th:field="*{id}" th:if="${evenement.id != null}">
+        <input type="hidden" name="clubId" th:value="${club.id}">
+
+        <div class="mb-3">
+          <label for="titre" class="form-label">Titre de l'événement *</label>
+          <input type="text" class="form-control" id="titre" th:field="*{titre}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description *</label>
+          <textarea class="form-control" id="description" th:field="*{description}" rows="5" required></textarea>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="date" class="form-label">Date et heure *</label>
+            <input type="datetime-local" class="form-control" id="date" th:field="*{date}" required>
+          </div>
+          <div class="col-md-6">
+            <label for="lieu" class="form-label">Lieu *</label>
+            <input type="text" class="form-control" id="lieu" th:field="*{lieu}" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="estPayant" th:field="*{estPayant}">
+            <label class="form-check-label" for="estPayant">
+              Événement payant
+            </label>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a th:href="@{/evenements}" class="btn btn-outline-secondary">Annuler</a>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

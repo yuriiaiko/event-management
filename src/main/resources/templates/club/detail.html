@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title=${club.nom})}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h1 class="card-title mb-4" th:text="${club.nom}">Nom du club</h1>
+
+                    <h5>Événements à venir</h5>
+                    <div class="table-responsive mt-3" th:if="${not #lists.isEmpty(evenements)}">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Date</th>
+                                <th>Lieu</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="evenement : ${evenements}">
+                                <td th:text="${evenement.titre}">Titre</td>
+                                <td th:text="${#temporals.format(evenement.date, 'dd/MM/yyyy HH:mm')}">Date</td>
+                                <td th:text="${evenement.lieu}">Lieu</td>
+                                <td>
+                                    <span class="badge" th:classappend="${evenement.estPayant ? 'bg-warning' : 'bg-success'}" th:text="${evenement.estPayant ? 'Payant' : 'Gratuit'}">Type</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/evenements/{id}(id=${evenement.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Détails
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(evenements)}">
+                        <i class="bi bi-info-circle me-2"></i> Aucun événement à venir pour ce club.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Informations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Membres</h6>
+                        <p class="fs-4 fw-bold text-primary" th:text="${membres.size()}">0</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Événements organisés</h6>
+                        <p class="fs-4 fw-bold text-primary" th:text="${evenements.size()}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Membres du bureau</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group" th:if="${not #lists.isEmpty(membres)}">
+                        <div class="list-group-item" th:each="membre : ${membres}" th:if="${membre.role.name() != 'MEMBRE'}">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1" th:text="${membre.prenom + ' ' + membre.nom}">Nom Prénom</h6>
+                                    <small th:text="${membre.email}">Email</small>
+                                </div>
+                                <span class="badge"
+                                      th:classappend="${
+                                        #strings.equals(membre.role.name(), 'PRESIDENT') ? 'bg-danger' :
+                                        (#strings.equals(membre.role.name(), 'VICE_PRESIDENT') ? 'bg-warning' :
+                                        (#strings.equals(membre.role.name(), 'SECRETAIRE') ? 'bg-info' :
+                                        (#strings.equals(membre.role.name(), 'TRESORIER') ? 'bg-success' : 'bg-secondary')))
+                                         }"
+                                      th:text="${membre.role}">Rôle
+                                </span>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(membres)}">
+                        <i class="bi bi-info-circle me-2"></i> Aucun membre n'a été ajouté pour le moment.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

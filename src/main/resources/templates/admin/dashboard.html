@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Tableau de bord - Administration')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+    <h1 class="mb-4">Administration</h1>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="#" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+                </a>
+                <a th:href="@{/admin/personnes}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people me-2"></i> Utilisateurs
+                </a>
+                <a th:href="@{/admin/clubs}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people-fill me-2"></i> Clubs
+                </a>
+                <a th:href="@{/admin/evenements}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-event me-2"></i> Événements
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-people fs-1 text-primary mb-2"></i>
+                            <h5 class="card-title">Utilisateurs</h5>
+                            <p class="card-text fs-2 fw-bold text-primary" th:text="${nbPersonnes}">0</p>
+                            <a th:href="@{/admin/personnes}" class="btn btn-sm btn-outline-primary">Gérer</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-people-fill fs-1 text-primary mb-2"></i>
+                            <h5 class="card-title">Clubs</h5>
+                            <p class="card-text fs-2 fw-bold text-primary" th:text="${nbClubs}">0</p>
+                            <a th:href="@{/admin/clubs}" class="btn btn-sm btn-outline-primary">Gérer</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar-event fs-1 text-primary mb-2"></i>
+                            <h5 class="card-title">Événements</h5>
+                            <p class="card-text fs-2 fw-bold text-primary" th:text="${nbEvenements}">0</p>
+                            <a th:href="@{/admin/evenements}" class="btn btn-sm btn-outline-primary">Gérer</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-calendar-check fs-1 text-primary mb-2"></i>
+                            <h5 class="card-title">Inscriptions</h5>
+                            <p class="card-text fs-2 fw-bold text-primary" th:text="${nbInscriptions}">0</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Gérer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Clubs</h5>
+                    <a th:href="@{/admin/clubs/creer}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-plus-circle"></i> Créer un club
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Membres</th>
+                                <th>Événements</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Données à remplir dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <a th:href="@{/admin/clubs}" class="btn btn-sm btn-outline-primary w-100">Voir tous les clubs</a>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Événements récents</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Date</th>
+                                <th>Organisateur</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Données à remplir dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <a th:href="@{/admin/evenements}" class="btn btn-sm btn-outline-primary w-100">Voir tous les événements</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

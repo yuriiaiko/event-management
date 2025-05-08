@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Liste des Clubs')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main class="container my-4">
+  <h1 class="mb-4">Clubs de l'EMSI</h1>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Rechercher un club..." id="searchInput">
+        <button class="btn btn-outline-secondary" type="button">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${not #lists.isEmpty(clubs)}" id="clubsContainer">
+    <div class="col" th:each="club : ${clubs}">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${club.nom}">Nom du club</h5>
+          <p class="card-text">
+            <i class="bi bi-people me-2"></i>
+            <span th:text="${club.membres != null ? club.membres.size() : 0}">0</span> membres
+          </p>
+          <p class="card-text">
+            <i class="bi bi-calendar-event me-2"></i>
+            <span th:text="${club.evenements != null ? club.evenements.size() : 0}">0</span> événements
+          </p>
+        </div>
+        <div class="card-footer bg-white border-top-0">
+          <a th:href="@{/club/{id}(id=${club.id})}" class="btn btn-primary w-100">
+            Voir les détails
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info" th:if="${#lists.isEmpty(clubs)}">
+    <i class="bi bi-info-circle me-2"></i> Aucun club n'est disponible pour le moment.
+  </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const clubsContainer = document.getElementById('clubsContainer');
+
+    if (searchInput && clubsContainer) {
+      searchInput.addEventListener('keyup', function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const clubCards = clubsContainer.querySelectorAll('.col');
+
+        clubCards.forEach(card => {
+          const clubName = card.querySelector('.card-title').textContent.toLowerCase();
+
+          if (clubName.includes(searchTerm)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+  });
+</script>
+</body>
+</html>
