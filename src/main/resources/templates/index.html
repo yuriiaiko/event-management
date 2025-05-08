@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/main :: head(title='Accueil - EMSI Events')}"></head>
+<body>
+<header th:replace="~{layout/main :: header}"></header>
+
+<main>
+    <!-- Section Hero -->
+    <section class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold mb-4">Bienvenue sur EMSI Events</h1>
+                    <p class="lead mb-4">La plateforme de gestion des événements organisés par l'école EMSI. Découvrez, participez et organisez des événements passionnants.</p>
+                    <div class="d-flex gap-3">
+                        <a th:href="@{/evenements}" class="btn btn-light btn-lg">Voir les événements</a>
+                        <a th:href="@{/club/liste}" class="btn btn-outline-light btn-lg">Découvrir les clubs</a>
+                    </div>
+                </div>
+                <div class="col-md-6 d-none d-md-block">
+                    <!-- <img src="/images/hero-illustration.pnj" alt="Illustration événements" class="img-fluid"> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Événements à venir -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Événements à venir</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="evenementsContainer">
+                <!-- Les événements seront chargés dynamiquement -->
+                <div class="col text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a th:href="@{/evenements}" class="btn btn-primary">Voir tous les événements</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Clubs -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Nos clubs</h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4" id="clubsContainer">
+                <!-- Les clubs seront chargés dynamiquement -->
+                <div class="col text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a th:href="@{/club/liste}" class="btn btn-primary">Voir tous les clubs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Comment ça marche -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Comment ça marche ?</h2>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-search fs-1"></i>
+                    </div>
+                    <h4>Découvrez</h4>
+                    <p>Parcourez les événements à venir et trouvez ceux qui vous intéressent.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-calendar-check fs-1"></i>
+                    </div>
+                    <h4>Inscrivez-vous</h4>
+                    <p>Inscrivez-vous aux événements en quelques clics et recevez des notifications.</p>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                    <h4>Participez</h4>
+                    <p>Participez aux événements et rencontrez d'autres étudiants passionnés.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Charger les événements à venir
+        fetch('/api/evenements/upcoming')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('evenementsContainer');
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><div class="alert alert-info">Aucun événement à venir pour le moment.</div></div>';
+                    return;
+                }
+
+                // Limiter à 3 événements
+                const events = data.slice(0, 3);
+
+                events.forEach(event => {
+                    const date = new Date(event.date);
+                    const formattedDate = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                    container.innerHTML += `
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                        <span>${event.club.nom}</span>
+                                        <span class="badge ${event.estPayant ? 'bg-warning' : 'bg-success'}">${event.estPayant ? 'Payant' : 'Gratuit'}</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${event.titre}</h5>
+                                        <p class="card-text">${event.description.substring(0, 100)}${event.description.length > 100 ? '...' : ''}</p>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-geo-alt me-2"></i>
+                                            <span>${event.lieu}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-calendar me-2"></i>
+                                            <span>${formattedDate} à ${formattedTime}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-top-0">
+                                        <a href="/evenements/${event.id}" class="btn btn-primary w-100">
+                                            Voir les détails
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des événements:', error);
+                const container = document.getElementById('evenementsContainer');
+                container.innerHTML = '<div class="col-12 text-center"><div class="alert alert-danger">Erreur lors du chargement des événements.</div></div>';
+            });
+
+        // Charger les clubs
+        fetch('/api/clubs')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('clubsContainer');
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><div class="alert alert-info">Aucun club disponible pour le moment.</div></div>';
+                    return;
+                }
+
+                // Limiter à 4 clubs
+                const clubs = data.slice(0, 4);
+
+                clubs.forEach(club => {
+                    container.innerHTML += `
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">${club.nom}</h5>
+                                        <p class="card-text">
+                                            <i class="bi bi-people me-2"></i>
+                                            <span>${club.nombreMembres}</span> membres
+                                        </p>
+                                        <p class="card-text">
+                                            <i class="bi bi-calendar-event me-2"></i>
+                                            <span>${club.nombreEvenements}</span> événements
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-white border-top-0">
+                                        <a href="/club/${club.id}" class="btn btn-outline-primary w-100">
+                                            Voir le club
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des clubs:', error);
+                const container = document.getElementById('clubsContainer');
+                container.innerHTML = '<div class="col-12 text-center"><div class="alert alert-danger">Erreur lors du chargement des clubs.</div></div>';
+            });
+    });
+</script>
+</body>
+</html>
