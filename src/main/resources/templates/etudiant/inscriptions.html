@@ -55,12 +55,11 @@
                 <td th:text="${inscription.evenement.lieu}">Lieu</td>
                 <td th:text="${inscription.evenement.club.nom}">Club</td>
                 <td>
-                  <span class="badge"
-                    th:classappend="${inscription.statut.name() == 'EN_ATTENTE'} ? ' bg-warning' :
-                      ${inscription.statut.name() == 'CONFIRMEE'} ? ' bg-success' :
-                      ${inscription.statut.name() == 'ANNULEE'} ? ' bg-danger' : ' bg-secondary'"
-                    th:text="${inscription.statut}">
-                    Statut
+                  <span class="badge" th:switch="${inscription.statut.name()}">
+                    <span th:case="'EN_ATTENTE'" class="badge bg-warning" th:text="${inscription.statut}">EN_ATTENTE</span>
+                    <span th:case="'CONFIRMEE'" class="badge bg-success" th:text="${inscription.statut}">CONFIRMEE</span>
+                    <span th:case="'ANNULEE'" class="badge bg-danger" th:text="${inscription.statut}">ANNULEE</span>
+                    <span th:case="*" class="badge bg-secondary" th:text="${inscription.statut}">AUTRE</span>
                   </span>
                 </td>
 

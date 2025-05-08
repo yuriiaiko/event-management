@@ -90,24 +90,17 @@
                             </thead>
                             <tbody>
                             <tr th:each="personne : ${personnes}"
-                                th:attr="data-type=${personne instanceof T(com.emsi.eventmanagement.model.Admin) ? 'admin' :
-                        (personne instanceof T(com.emsi.eventmanagement.model.MembreClub) ? 'membre' :
-                        (personne instanceof T(com.emsi.eventmanagement.model.Etudiant) ? 'etudiant' : ''))}">
-
-                            <td th:text="${personne.nom}">Nom</td>
+                                th:attr="data-type=${personne.type}">
+                                <td th:text="${personne.nom}">Nom</td>
                                 <td th:text="${personne.prenom}">Prénom</td>
                                 <td th:text="${personne.email}">Email</td>
                                 <td>
-                                <span class="badge"
-                                    th:classappend="${personne instanceof T(com.emsi.eventmanagement.model.Admin) ? 'bg-danger' :
-                                        (personne instanceof T(com.emsi.eventmanagement.model.MembreClub) ? 'bg-warning' :
-                                        (personne instanceof T(com.emsi.eventmanagement.model.Etudiant) ? 'bg-info' : 'bg-secondary'))}"
-                                    th:text="${personne instanceof T(com.emsi.eventmanagement.model.Admin) ? 'Admin' :
-                                        (personne instanceof T(com.emsi.eventmanagement.model.MembreClub) ? 'Membre Club' :
-                                        (personne instanceof T(com.emsi.eventmanagement.model.Etudiant) ? 'Étudiant' : 'Inconnu'))}">
-                                    Type
-                                </span>
-
+                                    <span class="badge" th:switch="${personne.type}">
+                                        <span th:case="'admin'" class="badge bg-danger" th:text="'Admin'">Admin</span>
+                                        <span th:case="'membre'" class="badge bg-warning" th:text="'Membre Club'">Membre Club</span>
+                                        <span th:case="'etudiant'" class="badge bg-info" th:text="'Étudiant'">Étudiant</span>
+                                        <span th:case="*" class="badge bg-secondary" th:text="'Inconnu'">Inconnu</span>
+                                    </span>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">

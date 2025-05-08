@@ -103,7 +103,7 @@
                 </div>
                 <div class="card-body">
                     <div class="list-group" th:if="${not #lists.isEmpty(notifications)}">
-                        <div class="list-group-item list-group-item-action" th:each="notification : ${notifications.subList(0, T(Math).min(5, notifications.size()))}">
+                        <div class="list-group-item list-group-item-action" th:each="notification : ${notifications.subList(0, T(java.lang.Math).min(5, notifications.size()))}">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1" th:text="${notification.type}">Type</h6>
                                 <small th:text="${#temporals.format(notification.dateEnvoi, 'dd/MM/yyyy HH:mm')}">Date</small>

@@ -19,6 +19,17 @@ public abstract class Personne {
     private String motDePasse;
     private boolean estMembreClub;
 
+    public String getType() {
+        if (this instanceof Administrateur) {
+            return "admin";
+        } else if (this instanceof MembreClub) {
+            return "membre";
+        } else if (this instanceof Etudiant) {
+            return "etudiant";
+        }
+        return "autre";
+    }
+
     // Méthode de connexion
     public boolean connexion() {
         // Logique de connexion à implémenter

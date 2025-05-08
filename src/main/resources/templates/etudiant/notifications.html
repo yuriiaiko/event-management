@@ -35,13 +35,12 @@
                         <div class="list-group-item list-group-item-action" th:each="notification : ${notifications}">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">
-                                    <span class="badge"
-                                        th:classappend="${notification.type.name() == 'INSCRIPTION'} ? ' bg-success' :
-                                            ${notification.type.name() == 'ANNULATION'} ? ' bg-danger' :
-                                            ${notification.type.name() == 'MODIFICATION'} ? ' bg-warning' :
-                                            ${notification.type.name() == 'RAPPEL'} ? ' bg-info' : ' bg-secondary'"
-                                        th:text="${notification.type}">
-                                            Type
+                                    <span class="badge" th:switch="${notification.type.name()}">
+                                        <span th:case="'INSCRIPTION'" class="badge bg-success" th:text="${notification.type}">INSCRIPTION</span>
+                                        <span th:case="'ANNULATION'" class="badge bg-danger" th:text="${notification.type}">ANNULATION</span>
+                                        <span th:case="'MODIFICATION'" class="badge bg-warning" th:text="${notification.type}">MODIFICATION</span>
+                                        <span th:case="'RAPPEL'" class="badge bg-info" th:text="${notification.type}">RAPPEL</span>
+                                        <span th:case="*" class="badge bg-secondary" th:text="${notification.type}">AUTRE</span>
                                     </span>
                                 </h6>
                                 <small th:text="${#temporals.format(notification.dateEnvoi, 'dd/MM/yyyy HH:mm')}">Date</small>
