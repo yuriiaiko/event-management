@@ -38,15 +38,25 @@ public class InscriptionService {
     }
 
     public Optional<Inscription> findByEtudiantAndEvenement(Etudiant etudiant, Evenement evenement){
-        return inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
+        List<Inscription> inscriptions = inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
+        if (inscriptions.isEmpty()) {
+            return Optional.empty();
+        }
+        // Retourner la première inscription (la plus récente)
+        return Optional.of(inscriptions.get(0));
     }
 
     public Inscription inscrireEtudiant(Etudiant etudiant, Evenement evenement) {
         //Vérifier si l'étudiant est déjà inscrit
-        Optional<Inscription> existingInscription = inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
-        if (existingInscription.isPresent()) {
-            return existingInscription.get();
+        List<Inscription> existingInscriptions = inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
+        if (!existingInscriptions.isEmpty()) {
+            // Supprimer les inscriptions en double
+            for (int i = 1; i < existingInscriptions.size(); i++) {
+                inscriptionRepository.delete(existingInscriptions.get(i));
+            }
+            return existingInscriptions.get(0);
         }
+
         //Créer une nouvelle inscription
         Inscription inscription = new Inscription();
         inscription.setId(UUID.randomUUID().toString());
@@ -66,16 +76,14 @@ public class InscriptionService {
     }
 
     public boolean desinscrireEtudiant(Etudiant etudiant, Evenement evenement) {
-        Optional<Inscription> inscriptionOpt = inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
-        if (inscriptionOpt.isPresent()) {
-            Inscription inscription = inscriptionOpt.get();
-            //Verifier si l'évènement est gratuit
-            if(!evenement.isEstPayant()){
+        List<Inscription> inscriptions = inscriptionRepository.findByEtudiantAndEvenement(etudiant, evenement);
+        if (!inscriptions.isEmpty()) {
+            // Supprimer toutes les inscriptions
+            for (Inscription inscription : inscriptions) {
                 inscriptionRepository.delete(inscription);
             }
             //Envoyer une notification
             notificationService.envoyerNotificationDesinscription(etudiant, evenement);
-
             return true;
         }
         return false;
